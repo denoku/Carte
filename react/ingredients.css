@@ -1,0 +1,60 @@
+.ingredientUploader {
+    padding-top: 5%;
+}
+
+.ingredientUploadBtn {
+    margin-right: 50px;
+}
+
+.ingredientSearchBar{
+    margin-left: 90px;
+    display: flex;
+}
+
+.ingredientsCard{
+    margin:.00000000001rem;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    width: 16rem;
+    height: 100%;
+    justify-content: center;
+}
+
+.ingredientsImage{
+    margin-top: .5rem;
+    border-radius: 25px;
+    /* width: 200px; You can set the dimensions to whatever you want */
+    height: 200px;
+    object-fit: fill;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.foodWarningInput{
+    height: 200px;
+}
+
+
+.ingredientscard-title {
+    font-weight: 900;
+    flex-grow: 1;
+    justify-content: center;
+}
+.ingredientsCard-description {
+    font-size: 13px;
+    overflow: hidden;
+    height: 50px;
+    text-overflow: ellipsis;
+}
+
+.ingredient-error{
+    width:100%;
+    font: size 80%;
+    margin-top: 0.25rem;
+    color: red;
+  }
+
+  .ingredientAddDescription{
+    height: 80px;
+  }
