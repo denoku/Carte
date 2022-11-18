@@ -14,11 +14,12 @@ const IngredientsModal = (props) => {
             <ModalHeader className='justify-content-center ingredientscard-title'
                 onHide={props.toggleModal}>{ingredient.name}</ModalHeader>
             <ModalBody className='modal-body'>
-                <p className=""><b>Description: </b> {ingredient.description}
+                <p><b>Description: </b> {ingredient.description}
                 </p>
-                <div className=" d-flex"><strong>Cost per unit: </strong><p className="">{ingredient.unitCost}</p></div>
-                <div className=" d-flex"><strong>Measured by: </strong><p className="">{ingredient.measure}</p></div>
-                <p className=""><b>Food Warning: </b> {ingredient.foodWarningTypes?.map((n) => n.name).join(", ")}
+                <div className=" d-flex"><strong>{`Cost per ${ingredient.measure}: `}</strong><p className='mx-1'>${ingredient.unitCost}</p></div>
+                <div className='d-flex'><strong>Quantity: </strong><p className='mx-1'>
+                    {ingredient.quantity} {ingredient.measure?.toLowerCase()}s in stock </p></div>
+                <p><b>Food Warning: </b> {ingredient.foodWarningTypes?.map((n) => n.name).join(", ")}
                 </p>
                 <ModalFooter>
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={props.toggleModal}>Close</button>

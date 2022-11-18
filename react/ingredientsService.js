@@ -14,10 +14,10 @@ const getIngredients = () => {
     return axios(config).then(helper.onGlobalSuccess).catch(helper.onGlobalError);
 };
 
-const paginateByOrgId = (pageIndex, pageSize, id) => {
+const paginateByOrgId = (pageIndex, pageSize) => {
     const config = {
         method: 'GET',
-        url: `${endpoint}/organization?pageIndex=${pageIndex}&pageSize=${pageSize}&OrganizationId=${id}`,
+        url: `${endpoint}/organization?pageIndex=${pageIndex}&pageSize=${pageSize}`,
         crossdomain: true,
         headers: { 'Content-Type': 'application/json' },
     };
@@ -35,10 +35,10 @@ const paginateByCreatedBy = (pageIndex, pageSize, id) => {
     return axios(config).then(helper.onGlobalSuccess).catch(helper.onGlobalError);
 };
 
-const searchPaginateByCreatedBy = (pageIndex, pageSize, id, query) => {
+const searchPaginateByOrgId = (pageIndex, pageSize, query) => {
     const config = {
         method: 'GET',
-        url: `${endpoint}/search?pageIndex=${pageIndex}&pageSize=${pageSize}&createdBy=${id}&query=${query}`,
+        url: `${endpoint}/search?pageIndex=${pageIndex}&pageSize=${pageSize}&query=${query}`,
         withCredentials: true,
         crossdomain: true,
         headers: { 'Content-Type': 'application/json' },
@@ -90,6 +90,29 @@ const selectIngredientsByOrgId = (orgId) => {
     };
     return axios(config).then(helper.onGlobalSuccess).catch(helper.onGlobalError);
 };
+
+const filterByFoodWarning = (pageIndex, pageSize, typeId) =>{
+    const config ={
+        method: 'GET',
+        url: `${endpoint}/foodWarning/?pageIndex=${pageIndex}&pageSize=${pageSize}&fwt=${typeId}`,
+        withCredentials: true,
+        crossdomain: true,
+        headers: { 'Content-Type': 'application/json' },
+    };
+    return axios(config).then(helper.onGlobalSuccess).catch(helper.onGlobalError);
+ };
+
+ const filterByRestriction = (pageIndex, pageSize, typeId) =>{
+    const config ={
+        method: 'GET',
+        url: `${endpoint}/restriction/?pageIndex=${pageIndex}&pageSize=${pageSize}&restrictionId=${typeId}`,
+        withCredentials: true,
+        crossdomain: true,
+        headers: { 'Content-Type': 'application/json' },
+    };
+    return axios(config).then(helper.onGlobalSuccess).catch(helper.onGlobalError);
+ }
+
 const ingredientsService = {
     getIngredients,
     paginateByOrgId,
@@ -98,6 +121,8 @@ const ingredientsService = {
     add,
     ingredientUpdate,
     selectIngredientsByOrgId,
-    searchPaginateByCreatedBy
+    searchPaginateByOrgId,
+    filterByFoodWarning,
+    filterByRestriction
 };
 export default ingredientsService;

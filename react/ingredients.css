@@ -40,6 +40,7 @@
     font-weight: 900;
     flex-grow: 1;
     justify-content: center;
+    text-align: center;
 }
 .ingredientsCard-description {
     font-size: 13px;
@@ -58,3 +59,20 @@
   .ingredientAddDescription{
     height: 80px;
   }
+
+  .addIngredient-preview{
+    position: fixed;
+    left:900px;   
+  }
+    
+  .addIngredient-preview img{
+    display: block;
+    max-width: 300px;
+    max-height: 280px;
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+  }
+

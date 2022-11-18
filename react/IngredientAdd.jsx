@@ -11,7 +11,7 @@ import FileUploaderContainer from '../FileUploaderContainer';
 import './ingredients.css';
 import Select from 'react-select';
 
-const _logger = debug.extend('Ingredient');
+const _logger = debug.extend('IngredientAdd');
 
 const IngredientAdd = () => {
     const [restrictions, setRestrictions] = useState([]);
@@ -39,7 +39,7 @@ const IngredientAdd = () => {
             setForm((prevState) => {
                 const pd = { ...prevState };
                 pd.restrictionId = state.payload.restriction.id
-                pd.foodWarningTypeId = state.payload.foodWarningTypes.map(fwt => ({ label: fwt.name, value: fwt.id }))
+                pd.foodWarningTypeId = state?.payload?.foodWarningTypes?.map(fwt => ({ label: fwt.name, value: fwt.id }))
                 pd.name = state.payload.name
                 pd.unitCost = state.payload.unitCost
                 pd.description = state.payload.description
@@ -294,19 +294,18 @@ const IngredientAdd = () => {
                     </Card>
                 </Col>
                 {state !== null}
-                <Col className='m-auto align-self-center mx-auto col-4' >
+                <Col className='addIngredient-preview' >
                     <div className="col">
                         <div className="col">
                             <Card
-                                style={{ width: '30rem' }}>
-                                <Card.Img variant="top" src={formik.values.imageUrl} />
+                                style={{ width: '25rem' }}>
+                                <Card.Img variant="top" src={formik.values.imageUrl} alt='CARD PREVIEW' />
                                 <Card.Body>
                                     <Card.Title className='text-center'><strong>{formik.values.name}</strong></Card.Title>
                                     <Card.Text><b>Description:</b>  {formik.values.description}</Card.Text>
-                                    <Card.Text><b>UnitCost:</b> {formik.values.unitCost}</Card.Text>
-                                    <Card.Text><b>Measured by:</b> {formik.values.measure} </Card.Text>
+                                    <Card.Text><b>Cost per {formik.values.measure.toLowerCase()}: </b> ${formik.values.unitCost}</Card.Text>
                                     <Card.Text><b>Quantity:</b> {formik.values.quantity} </Card.Text>
-                                    <Card.Text><b>FoodWarning:</b> {formik.values.foodWarningTypeId.map(name => name.label).join()}</Card.Text>
+                                    <Card.Text><b>FoodWarning:</b> {formik.values.foodWarningTypeId?.map(name => name.label).join()}</Card.Text>
 
 
                                 </Card.Body>

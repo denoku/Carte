@@ -84,6 +84,78 @@ namespace Sabio.Services
             }
             return pagedList;
         }
+        public Paged<IngredientV2> PaginateByFoodWarning(int pageIndex, int pageSize, int orgId, int typeId)
+        {
+            Paged<IngredientV2> pagedList = null;
+            List<IngredientV2> list = null;
+            int totalCount = 0;
+            string procName = "[dbo].[Ingredients_SelectAll_ByFoodWarningType]";
+
+            _data.ExecuteCmd(procName, delegate (SqlParameterCollection param)
+            {
+                param.AddWithValue("@pageIndex", pageIndex);
+                param.AddWithValue("@pageSize", pageSize);
+                param.AddWithValue("@OrganizationId", orgId);
+                param.AddWithValue("@FoodWarningTypeId", typeId);
+
+            }, delegate (IDataReader reader, short set)
+            {
+                int startingIndex = 0;
+                IngredientV2 ingredient = MapSingleIngredientV2(reader, ref startingIndex);
+
+                if (totalCount == 0)
+                {
+                    totalCount = reader.GetSafeInt32(startingIndex++);
+                }
+                if (list == null)
+                {
+                    list = new List<IngredientV2>();
+                }
+                list.Add(ingredient);
+            }
+           );
+            if (list != null)
+            {
+                pagedList = new Paged<IngredientV2>(list, pageIndex, pageSize, totalCount);
+            }
+            return pagedList;
+        }
+        public Paged<IngredientV2> PaginateByRestriction(int pageIndex, int pageSize, int orgId, int restrictionId)
+        {
+            Paged<IngredientV2> pagedList = null;
+            List<IngredientV2> list = null;
+            int totalCount = 0;
+            string procName = "[dbo].[Ingredients_SelectAll_ByRestriction]";
+
+            _data.ExecuteCmd(procName, delegate (SqlParameterCollection param)
+            {
+                param.AddWithValue("@pageIndex", pageIndex);
+                param.AddWithValue("@pageSize", pageSize);
+                param.AddWithValue("@OrganizationId", orgId);
+                param.AddWithValue("@RestrictionId", restrictionId);
+
+            }, delegate (IDataReader reader, short set)
+            {
+                int startingIndex = 0;
+                IngredientV2 ingredient = MapSingleIngredientV2(reader, ref startingIndex);
+
+                if (totalCount == 0)
+                {
+                    totalCount = reader.GetSafeInt32(startingIndex++);
+                }
+                if (list == null)
+                {
+                    list = new List<IngredientV2>();
+                }
+                list.Add(ingredient);
+            }
+           );
+            if (list != null)
+            {
+                pagedList = new Paged<IngredientV2>(list, pageIndex, pageSize, totalCount);
+            }
+            return pagedList;
+        }
         public Paged<IngredientV2> PaginateByCreatedById(int pageIndex, int pageSize, int userId)
         {
             Paged<IngredientV2> pagedList = null;
@@ -119,18 +191,18 @@ namespace Sabio.Services
             }
             return pagedList;
         }
-        public Paged<IngredientV2> SearchPaginateByCreatedById(int pageIndex, int pageSize, int userId, string query)
+        public Paged<IngredientV2> SearchPaginateByOrgId(int pageIndex, int pageSize,int orgId, string query)
         {
             Paged<IngredientV2> pagedList = null;
             List<IngredientV2> list = null;
             int totalCount = 0;
-            string procName = "[dbo].[Ingredients_Search_ByCreatedBy]";
+            string procName = "[dbo].[Ingredients_SearchByOrgId]";
 
             _data.ExecuteCmd(procName, delegate (SqlParameterCollection param)
             {
                 param.AddWithValue("@pageIndex", pageIndex);
                 param.AddWithValue("@pageSize", pageSize);
-                param.AddWithValue("@CreatedBy", userId);
+                param.AddWithValue("@OrgId", orgId);
                 param.AddWithValue("@Query", query);
 
             }, delegate (IDataReader reader, short set)
@@ -237,29 +309,6 @@ namespace Sabio.Services
             List<IngredientBase> list = null;
 
             string procName = "[dbo].[Ingredients_SelectAll]";
-
-            _data.ExecuteCmd(procName, inputParamMapper: null
-                , singleRecordMapper: delegate (IDataReader reader, short set)
-                {
-                    int startingIndex = 0;
-                    IngredientBase ingredient = MapSingleIngredientCsv(reader, ref startingIndex);
-
-                    if (list == null)
-                    {
-                        list = new List<IngredientBase>();
-                    }
-
-                    list.Add(ingredient);
-                }
-          );
-            return list;
-        }
-        public List<IngredientBase> GetAllIngredientsByFoodWarning()
-        {
-
-            List<IngredientBase> list = null;
-
-            string procName = "[dbo].[Ingredients_SelectAll_ByFoodWarningType]";
 
             _data.ExecuteCmd(procName, inputParamMapper: null
                 , singleRecordMapper: delegate (IDataReader reader, short set)

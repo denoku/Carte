@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import logger from 'sabio-debug';
 import { useNavigate } from 'react-router-dom';
@@ -7,10 +7,11 @@ import { MdDeleteForever } from 'react-icons/md';
 import { TiEdit, TiEye } from 'react-icons/ti';
 import './ingredients.css';
 
-const _logger = logger.extend('Ingredients');
+const _logger = logger.extend('RenderIngredients');
 
 const RenderIngredients = (props) => {
     _logger('props', props);
+    const [isShown, setIsShown] = useState(false);
     const ingredient = props.ingredient;
     const navigate = useNavigate();
 
@@ -36,6 +37,11 @@ const RenderIngredients = (props) => {
         e.preventDefault();
         props.onModal(ingredient, e)
     }
+
+    const onCardEnter = () => {
+        setIsShown(!isShown)
+    }
+
     return (
         <div className="justify-content-center">
             <Row className='ingredientsCard'>
@@ -45,22 +51,30 @@ const RenderIngredients = (props) => {
                             <img className="card-img-top ingredientsImage" src={ingredient.imageUrl} alt="" />
                         </>
                     )}
-                    <Card.Body className={ingredient.imageUrl ? 'position-relative' : ''} >
+                    <Card.Body className={ingredient.imageUrl ? 'position-relative' : ''}
+                        onMouseEnter={onCardEnter}
+                        onMouseLeave={onCardEnter} >
                         <h4 className='ingredientscard-title'>{ingredient.name}</h4>
                         <div className="d-flex justify-content-center mt-2">
-                            <Button
-                                variant="primary"
-                                className="rounded-pill mb-3 mt-1 mx-2"
-                                data-page={ingredient}
-                                onClick={onEditClicked}>
-                                <TiEdit />
-                            </Button>
-                            <Button variant="danger" className="rounded-pill mb-3 mt-1 mx-2" onClick={onDeleteIngredient}>
-                                <MdDeleteForever />
-                            </Button>
-                            <Button type="button" className="rounded-pill mb-3 mt-1 mx-2" onClick={onModalClicked} >
-                                <TiEye />
-                            </Button>
+                            {isShown &&
+                                (<>
+                                    <Button
+                                        variant="primary"
+                                        className="rounded-pill mb-3 mt-1 mx-2"
+                                        data-page={ingredient}
+                                        onClick={onEditClicked}>
+                                        <TiEdit />
+                                    </Button>
+                                    <Button variant="danger" className="rounded-pill mb-3 mt-1 mx-2" onClick={onDeleteIngredient}>
+                                        <MdDeleteForever />
+                                    </Button>
+
+
+
+                                    <Button type="button" className="rounded-pill mb-3 mt-1 mx-2" onClick={onModalClicked} >
+                                        <TiEye />
+                                    </Button>
+                                </>)}
                         </div>
                     </Card.Body>
                 </Card>

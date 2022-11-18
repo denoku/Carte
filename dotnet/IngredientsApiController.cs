@@ -95,6 +95,66 @@ namespace Sabio.Web.Api.Controllers
             }
             return result;
         }
+        [HttpGet("foodWarning")]
+        public ActionResult<ItemResponse<Paged<Ingredient>>> PaginateByFoodWarning(int pageIndex, int pageSize, int fwt)
+        {
+            ActionResult result = null;
+
+            try
+            {
+                int userId = _authService.GetCurrentUserId();
+                var currentOrg = _orgService.GetOrgByUserId(userId);
+                var orgId = currentOrg.Id;
+                Paged<IngredientV2> page = _service.PaginateByFoodWarning(pageIndex, pageSize, orgId, fwt);
+
+                if (page == null)
+                {
+                    result = NotFound404(new ErrorResponse("Records not found"));
+                }
+                else
+                {
+                    ItemResponse<Paged<IngredientV2>> response = new ItemResponse<Paged<IngredientV2>>();
+                    response.Item = page;
+                    result = Ok200(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                result = StatusCode(500, new ErrorResponse(ex.Message.ToString()));
+            }
+            return result;
+        }
+        [HttpGet("restriction")]
+        public ActionResult<ItemResponse<Paged<Ingredient>>> PaginateByRestriction(int pageIndex, int pageSize, int restrictionId)
+        {
+            ActionResult result = null;
+
+            try
+            {
+                int userId = _authService.GetCurrentUserId();
+                var currentOrg = _orgService.GetOrgByUserId(userId);
+                var orgId = currentOrg.Id;
+                Paged<IngredientV2> page = _service.PaginateByRestriction(pageIndex, pageSize, orgId, restrictionId);
+
+                if (page == null)
+                {
+                    result = NotFound404(new ErrorResponse("Records not found"));
+                }
+                else
+                {
+                    ItemResponse<Paged<IngredientV2>> response = new ItemResponse<Paged<IngredientV2>>();
+                    response.Item = page;
+                    result = Ok200(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                result = StatusCode(500, new ErrorResponse(ex.Message.ToString()));
+            }
+            return result;
+        }
 
         [HttpGet("current")]
         public ActionResult<ItemResponse<Paged<IngredientV2>>> PaginateByCreatedById(int pageIndex, int pageSize)
@@ -127,18 +187,20 @@ namespace Sabio.Web.Api.Controllers
             return result;
         }
         [HttpGet("search")]
-        public ActionResult<ItemResponse<Paged<IngredientV2>>> SearchByCreatedById(int pageIndex, int pageSize, string query)
+        public ActionResult<ItemResponse<Paged<IngredientV2>>> SearchByOrgId(int pageIndex, int pageSize, string query)
         {
             ActionResult result = null;
 
             try
             {
                 int userId = _authService.GetCurrentUserId();
-                Paged<IngredientV2> page = _service.SearchPaginateByCreatedById(pageIndex, pageSize, userId, query);
+                var currentOrg = _orgService.GetOrgByUserId(userId);
+                var orgId = currentOrg.Id;
+                Paged<IngredientV2> page = _service.SearchPaginateByOrgId(pageIndex, pageSize, orgId, query);
 
                 if (page == null)
                 {
-                    result = NotFound404(new ErrorResponse("User not found."));
+                    result = NotFound404(new ErrorResponse("Ingredient not found."));
                 }
                 else
                 {
