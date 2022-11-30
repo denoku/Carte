@@ -12,10 +12,10 @@ import { getTypes } from '../../services/lookUpService';
 import toastr from 'toastr';
 import './ingredients.css';
 import IngredientsModal from './IngredientsModal';
-import { Typeahead } from "react-bootstrap-typeahead";
-import { MdAdd, MdDriveFolderUpload, MdOutlineFilterList } from 'react-icons/md';
-import { Formik, Field, ErrorMessage } from 'formik';
+import { MdAdd, MdDriveFolderUpload, MdOutlineFilterList, MdSearch } from 'react-icons/md';
+import { Formik, Field, ErrorMessage, Form as Form1 } from 'formik';
 import * as Yup from 'yup';
+import Select from 'react-select';
 
 
 const _logger = debug.extend('Ingredients');
@@ -30,7 +30,6 @@ function Ingredients() {
         pageIndex: 0,
         pageSize: 8,
         totalCount: 0,
-        initialIndex: 0
     });
 
     const [showModal, setShowModal] = useState(false);
@@ -39,12 +38,8 @@ function Ingredients() {
     const [searchIngredients] = useState({
         query: ""
     });
-    const [restriction] = useState([]);
-    const [foodWarning] = useState([]);
-    const [optionData, setOptionData] = useState({
-        restrictionArray: [],
-        foodWarningArray: []
-    })
+    const [restriction, setRestrictions] = useState([]);
+    const [foodWarning, setFoodWarning] = useState([]);
 
     const toggleModal = () => {
         setShowModal(!showModal);
@@ -190,13 +185,13 @@ function Ingredients() {
         var foodWarningInfo = data.item.foodWarningTypes;
         _logger('restrictionInfo', restrictionInfo);
         _logger('foodWarning', foodWarningInfo);
-        setOptionData((prev) => {
-            const pd = { ...prev }
-            pd.restrictionArray = restrictionInfo;
-            pd.foodWarningArray = foodWarningInfo;
 
-            return pd;
-        });
+        const mappedRestrictions = restrictionInfo.map(mapTypes);
+        _logger('mr', mappedRestrictions);
+        const mappedFoodWarning = foodWarningInfo.map(mapTypes);
+        _logger('mf', mappedFoodWarning);
+        setRestrictions(mappedRestrictions);
+        setFoodWarning(mappedFoodWarning);
 
     };
 
@@ -204,11 +199,21 @@ function Ingredients() {
         _logger(err);
     };
 
+
+    const mapTypes = (options) => {
+        const selectOptions = {
+            value: options.id,
+            label: options.name
+        }
+        _logger('options', selectOptions);
+        return selectOptions
+
+    }
+
     const filterFoodWarning = (fwt) => {
-        let id = fwt.map(fwt => fwt.id)
-        _logger("fwt", id)
+        _logger("fwt", fwt.value)
         ingredientsService
-            .filterByFoodWarning(data.pageIndex, data.pageSize, id)
+            .filterByFoodWarning(data.pageIndex, data.pageSize, fwt.value)
             .then(filterSuccess)
             .catch(filterError)
     };
@@ -234,10 +239,9 @@ function Ingredients() {
     };
 
     const filterRestriction = (rt) => {
-        let id = rt.map(rt => rt.id)
-        _logger("rt", id)
+        _logger("rt", rt)
         ingredientsService
-            .filterByRestriction(data.pageIndex, data.pageSize, id)
+            .filterByRestriction(data.pageIndex, data.pageSize, rt.value)
             .then(filterSuccess)
             .catch(filterError)
     };
@@ -285,7 +289,7 @@ function Ingredients() {
                             onSubmit={onIngredientSearch}
                             validationSchema={searchSchema}>
                             {({ submitForm, handleChange }) => (
-                                <Form id="ingredients search mx-2">
+                                <Form1 id="ingredients search mx-2">
                                     <div className="form-group ingredientSearchBar">
                                         <Field
                                             type="search"
@@ -304,39 +308,37 @@ function Ingredients() {
                                         />
                                         <ErrorMessage className="has-error" name="query" component="div" />
                                         <button type="submit" className="btn btn-primary d-flex">
-                                            Search
+                                            <strong><MdSearch /> </strong>
                                         </button>
                                     </div>
-                                </Form>
+                                </Form1>
                             )}
                         </Formik>
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-3">
+                    <div className="col-3 mt-2">
                         {showFilters &&
                             <Form.Group>
-                                <Typeahead
+                                <Select
                                     id="foodWarning-type"
-                                    labelKey={(rt) => `${rt.name}`}
                                     onChange={filterFoodWarning}
-                                    options={optionData.foodWarningArray}
+                                    className='mt-2'
                                     placeholder="Filter by Food Warning Type..."
-                                    selected={foodWarning}
+                                    options={foodWarning}
                                 />
                             </Form.Group>
                         }
                     </div>
-                    <div className="col-3">
+                    <div className="col-3 mt-2">
                         {showFilters &&
                             <Form.Group>
-                                <Typeahead
+                                <Select
                                     id="restriction-type"
-                                    labelKey={(rt) => `${rt.name}`}
                                     onChange={filterRestriction}
-                                    options={optionData.restrictionArray}
-                                    placeholder="Filter by Restriction Type..."
-                                    selected={restriction}
+                                    className='mt-2'
+                                    placeholder="Filter by Restriction..."
+                                    options={restriction}
                                 />
                             </Form.Group>
                         }

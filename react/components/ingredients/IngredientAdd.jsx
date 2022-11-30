@@ -88,7 +88,7 @@ const IngredientAdd = () => {
     const onRegSuccess = (response) => {
         _logger(response);
         Swal.fire('Ingredient Added.', response);
-        navigate('/ingredients')
+        navigate('/ingredients');
     };
     const onRegError = (error) => {
         _logger(error);
@@ -99,7 +99,7 @@ const IngredientAdd = () => {
     const onEditSuccess = (response) => {
         _logger(response);
         Swal.fire('Edit successful.', response);
-        navigate('/ingredients')
+        navigate('/ingredients');
     };
     const onEditError = (error) => {
         _logger(error);
@@ -123,7 +123,6 @@ const IngredientAdd = () => {
         _logger('mf', mappedFoodWarning);
         setRestrictions(mappedRestrictions);
         setFoodWarning(mappedFoodWarning);
-
     };
 
     const onGetTypesError = (err) => {
@@ -142,12 +141,11 @@ const IngredientAdd = () => {
     const mapFoodWarning = (options) => {
         const selectOptions = {
             value: options.id,
-            label: options.name
-        }
+            label: options.name,
+        };
         _logger('options', selectOptions);
-        return selectOptions
-
-    }
+        return selectOptions;
+    };
     const onFileUpload = (files) => {
         formik.setFieldValue('imageUrl', files[0].url);
     };
@@ -169,7 +167,7 @@ const IngredientAdd = () => {
                     <Card>
                         <Card.Body>
                             <FormikProvider value={formik}>
-                                <h2>{state ? "Edit Ingredient" : "Add Ingredient"}</h2>
+                                <h2>{state ? 'Edit Ingredient' : 'Add Ingredient'}</h2>
 
                                 <Form>
                                     <div className="mb-3">
@@ -182,7 +180,7 @@ const IngredientAdd = () => {
                                             className="form-control"
                                             placeholder="Onion"
                                         />
-                                        <ErrorMessage name='name' component={'div'} className='ingredient-error' />
+                                        <ErrorMessage name="name" component={'div'} className="ingredient-error" />
                                     </div>
 
                                     <div className="mb-3">
@@ -195,7 +193,7 @@ const IngredientAdd = () => {
                                             className="form-control"
                                             placeholder="2.00"
                                         />
-                                        <ErrorMessage name='unitCost' component={'div'} className='ingredient-error' />
+                                        <ErrorMessage name="unitCost" component={'div'} className="ingredient-error" />
                                     </div>
                                     <div className="mb-3">
                                         <label>Measure</label>
@@ -207,7 +205,7 @@ const IngredientAdd = () => {
                                             className="form-control"
                                             placeholder="Pounds, Ounces, liters, Gallons, TableSpoon, Teaspoon, Cup"
                                         />
-                                        <ErrorMessage name='measure' component={'div'} className='ingredient-error' />
+                                        <ErrorMessage name="measure" component={'div'} className="ingredient-error" />
                                     </div>
                                     <div className="mb-3">
                                         <label>Quantity</label>
@@ -219,7 +217,7 @@ const IngredientAdd = () => {
                                             className="form-control"
                                             placeholder="Quantity of Ingredient"
                                         />
-                                        <ErrorMessage name='quantity' component={'div'} className='ingredient-error' />
+                                        <ErrorMessage name="quantity" component={'div'} className="ingredient-error" />
                                     </div>
 
                                     <label className="mb-1 mt23 fw-bold">Restrictions</label>
@@ -233,23 +231,28 @@ const IngredientAdd = () => {
                                         name="foodWarningTypeId"
                                         className="basic-multi-select"
                                         value={formik.values.foodWarningTypeId}
-                                        onChange={selectedOption =>
-                                            formik.setFieldValue("foodWarningTypeId", selectedOption)}
+                                        onChange={(selectedOption) =>
+                                            formik.setFieldValue('foodWarningTypeId', selectedOption)
+                                        }
                                         options={foodWarning}
-                                        closeMenuOnSelect={false}>
+                                        closeMenuOnSelect={true}>
 
                                     </Select>
                                     <div className="mb-3 mt-3">
                                         <label>Description</label>
                                         <Field
                                             required
-                                            component='textarea'
+                                            component="textarea"
                                             id="description"
                                             name="description"
                                             className="form-control ingredientAddDescription"
                                             placeholder="Description of ingredient"
                                         />
-                                        <ErrorMessage name='description' component={'div'} className='ingredient-error' />
+                                        <ErrorMessage
+                                            name="description"
+                                            component={'div'}
+                                            className="ingredient-error"
+                                        />
                                     </div>
                                     <div className="checkbox-wrapper">
                                         <div>
@@ -260,7 +263,11 @@ const IngredientAdd = () => {
                                                 name="isInStock"
                                                 placeholder="Is In Stock"
                                             />
-                                            <ErrorMessage name='isInStock' component={'div'} className='ingredient-error' />
+                                            <ErrorMessage
+                                                name="isInStock"
+                                                component={'div'}
+                                                className="ingredient-error"
+                                            />
                                         </div>
                                         <p></p>
                                         <Row>
@@ -273,13 +280,12 @@ const IngredientAdd = () => {
                                                     className="form-control mt-1"
                                                     disable={false ? 'false' : undefined}
                                                     placeholder="Enter Image URL here"></Field>{' '}
-
                                             </Col>
                                         </Row>
                                     </div>
                                     <p></p>
                                     <button to="/ingredients" className="btn btn-success" type="submit">
-                                        {state ? "Edit Ingredient" : "Add Ingredient"}
+                                        {state ? 'Edit Ingredient' : 'Add Ingredient'}
                                     </button>
                                     <p></p>
                                     <div>
@@ -288,26 +294,34 @@ const IngredientAdd = () => {
                                         </Link>
                                     </div>
                                 </Form>
-
                             </FormikProvider>
                         </Card.Body>
                     </Card>
                 </Col>
                 {state !== null}
-                <Col className='addIngredient-preview' >
+                <Col className="addIngredient-preview">
                     <div className="col">
                         <div className="col">
-                            <Card
-                                style={{ width: '25rem' }}>
-                                <Card.Img variant="top" src={formik.values.imageUrl} alt='CARD PREVIEW' />
+                            <Card style={{ width: '25rem' }}>
+                                <Card.Img variant="top" src={formik.values.imageUrl} alt="CARD PREVIEW" />
                                 <Card.Body>
-                                    <Card.Title className='text-center'><strong>{formik.values.name}</strong></Card.Title>
-                                    <Card.Text><b>Description:</b>  {formik.values.description}</Card.Text>
-                                    <Card.Text><b>Cost per {formik.values.measure.toLowerCase()}: </b> ${formik.values.unitCost}</Card.Text>
-                                    <Card.Text><b>Quantity:</b> {formik.values.quantity} </Card.Text>
-                                    <Card.Text><b>FoodWarning:</b> {formik.values.foodWarningTypeId?.map(name => name.label).join()}</Card.Text>
-
-
+                                    <Card.Title className="text-center">
+                                        <strong>{formik.values.name}</strong>
+                                    </Card.Title>
+                                    <Card.Text>
+                                        <b>Description:</b> {formik.values.description}
+                                    </Card.Text>
+                                    <Card.Text>
+                                        <b>Cost per {formik.values.measure?.toLowerCase()}: </b> $
+                                        {formik.values.unitCost}
+                                    </Card.Text>
+                                    <Card.Text>
+                                        <b>Quantity:</b> {formik.values.quantity}{' '}
+                                    </Card.Text>
+                                    <Card.Text>
+                                        <b>FoodWarning:</b>{' '}
+                                        {formik.values.foodWarningTypeId?.map((name) => name.label).join()}
+                                    </Card.Text>
                                 </Card.Body>
                             </Card>
                         </div>

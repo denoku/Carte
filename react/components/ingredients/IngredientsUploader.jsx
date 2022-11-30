@@ -7,11 +7,20 @@ import 'toastr/build/toastr.css';
 import { TbCloudUpload } from 'react-icons/tb';
 import { Row, Col, Card } from 'react-bootstrap';
 import './ingredients.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import IngredientExampleModal from './ingredientExampleModal';
 
 function IngredientsUploader() {
     const navigate = useNavigate();
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const toggleModal = () => {
+        setShowModal(!showModal);
+    };
+
+    const onModalClicked = () => {
+        toggleModal();
+    };
     const _logger = debug.extend('FileUploader');
     _logger('FileUploader Props', selectedFiles);
 
@@ -44,14 +53,18 @@ function IngredientsUploader() {
         <>
 
             <Row className="ingredientUploader">
+                <IngredientExampleModal
+                    isOpen={showModal}
+                    toggleModal={toggleModal}
+                />
                 <Col>
                     <Card>
                         <Card.Body>
-                            <h4 className="header-title mb-3">Upload Ingredients</h4>
+                            <h4 className="ingredient-Upload mb-3">Upload Ingredients CSV</h4>
 
                             <p className="text-muted font-13 m-b-30">
                                 Here you can mass upload all your ingredients at once through the use of a csv file.
-                                (You may create all your ingredients in an excel/google sheet but please format to a csv before upload)
+                                <Link className='mx-1' onClick={onModalClicked}>Example</Link>
                             </p>
                             <Dropzone accept={'text/csv'} onDrop={(acceptedFiles) => handleAcceptedFiles(acceptedFiles)}>
                                 {({ getRootProps, getInputProps }) => (
