@@ -8,7 +8,7 @@ import { TbCloudUpload } from 'react-icons/tb';
 import { Row, Col, Card } from 'react-bootstrap';
 import './ingredients.css';
 import { Link, useNavigate } from 'react-router-dom';
-import IngredientExampleModal from './ingredientExampleModal';
+import IngredientExampleModal from './IngredientExModal';
 
 function IngredientsUploader() {
     const navigate = useNavigate();

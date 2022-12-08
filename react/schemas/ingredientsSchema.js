@@ -10,7 +10,7 @@
       .min(0, 'Unit Cost Must be a minimum of 0' ),
       description: Yup.string()
       .min(2, 'Description must be a minumum of 2 characters')
-      .max(500, 'Maximum of 500 characters'),
+      .max(300, 'Maximum of 300 characters'),
       imageUrl: Yup.string()
       .min(2, 'must be a minumum of 2 characters')
       .max(500, 'Maximum of 500 characters'),

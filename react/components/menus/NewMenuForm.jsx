@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { Card, Col, Row } from 'react-bootstrap';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Select from 'react-select';
 import debug from 'sabio-debug';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import FileUploaderContainer from '../../components/FileUploaderContainer';
-import { addMenu, getTimeZones, getDaysOfWeek } from '../../services/menusService';
 import * as toastr from 'toastr';
 import 'toastr/build/toastr.css';
+import FileUploaderContainer from '../../components/FileUploaderContainer';
 import menuSchema from '../../schemas/menuSchema';
-import Select from 'react-select';
-import { useLocation } from 'react-router-dom';
+import { addMenu, getDaysOfWeek, getTimeZones } from '../../services/menusService';
+
 
 const _logger = debug.extend('NewMenuForm');
 
-const NewMenuForm = () => {
-
+const NewMenuForm = (userOrg) => {
+    _logger('userOrg', userOrg.currentUserOrg.id)
     const [formData, setFormData] = useState({
         name: '',
+        organizationId: userOrg.currentUserOrg.id,
         description: '',
         fileId: 0,
         startDate: '00-00-0000',
@@ -34,46 +36,38 @@ const NewMenuForm = () => {
     });
 
     const { state } = useLocation();
+    const navigate = useNavigate();
     useEffect(() => {
         if (state?.type === 'Edit_Menu') {
             _logger('state', state);
-            setFormData((prevState) => {
-                const pd = { ...prevState };
-                pd.name = state.payload.name
-                pd.description = state.payload.description
-                pd.fileId = state.payload.fileId
-                pd.startDate = state.payload.startDate
-                pd.endDate = state.payload.endDate
-                pd.startTime = state.payload.startTime
-                pd.endTime = state.payload.endTime
-                pd.timeZoneId = state.payload.timeZoneId
-                return pd
-            })
+            setFormData(() => {
+                const pd = state.payload;
+                return pd;
+            });
         }
         if (state === null) {
             setFormData((prevState) => {
                 const pd = { ...prevState };
-                pd.name = ''
-                pd.description = ''
-                pd.fileId = 0
-                pd.startDate = '00-00-0000'
-                pd.endDate = '00-00-0000'
-                pd.startTime = '00-00-0000'
-                pd.endTime = '00-00-0000'
-                pd.timeZoneId = 0
+                pd.name = '';
+                pd.organizationId = userOrg.id;
+                pd.description = '';
+                pd.fileId = 0;
+                pd.startDate = '00-00-0000';
+                pd.endDate = '00-00-0000';
+                pd.startTime = '00-00-0000';
+                pd.endTime = '00-00-0000';
+                pd.timeZoneId = 0;
 
-                return pd
-            })
+                return pd;
+            });
         }
     }, [state]);
     useEffect(() => {
         getTimeZones().then(onGetTimeZonesSuccess).catch(onGetTimeZonesError);
         getDaysOfWeek().then(onGetDaysOfWeekSuccess).catch(onGetDaysOfWeekError);
 
-
         _logger(formData);
     }, []);
-
 
     const formatTime = (time) => {
         let timeStr = time;
@@ -86,29 +80,53 @@ const NewMenuForm = () => {
 
     const onFormSubmit = (values) => {
         _logger(values, 'these are form values');
-        debugger;
-        const startTime = formatTime(values.startTime.toString()),
-            endTime = formatTime(values.endTime.toString());
+        values.startTime = formatTime(values.startTime);
+        values.endTime = formatTime(values.endTime);
+
+        // debugger;
+        const startTime = `${values.startTime.replace('00:00', '00')}`;
+        const endTime = `${values.startTime.replace('00:00', '00')}`;
+        let newStartDate = values.startDate.replace('T00:00:00', '');
+        let newEndDate = values.endDate.replace('T00:00:00', '');
         _logger(startTime, endTime);
+        _logger('payload.menuDays', values.menuDays[0]);
+
+        // if (!payload.id) {
+        //     discountScheduleService.addSchedule(payload).then(onSuccess).catch(onError);
+        // } else {
+        //     if (payload.startTime.length >= 11) {
+        //         payload.startTime = `${values.startTime.replace('00:00', '00')}`; // 03:33:00
+        //     }
+        //     if (payload.endTime.length >= 11) {
+        //         payload.endTime = `${values.endTime.replace('00:00', '00')}`;
+        //     }
+        //     discountScheduleService.updateSchedule(payload).then(onSuccess).catch(onError);
+        //     payload.endTime = `${values.endTime}`;
+        //     payload.startTime = `${values.startTime}`;
+
         const payload = {
-            name: values.name,
-            description: values.description,
-            fileId: values.fileId,
-            startDate: new Date(values.startDate),
-            endDate: new Date(values.endDate),
+            ...values,
+            // name: values.name,
+            // description: values.description,
+            // fileId: values.fileId,
+            startDate: new Date(newStartDate),
+            endDate: new Date(newEndDate),
             startTime: startTime,
             endTime: endTime,
             timeZoneId: values.timeZoneId,
             menuDays: values.menuDays.map((day) => day.value),
-            menuSections: values.menuSections.map((section) => section.value),
+            // menuSections: values.menuSections.map((section) => section.value),
         };
+        _logger('payload.menuDays', payload.menuDays[0]);
         _logger(payload, 'this is payload');
+
         addMenu(payload).then(onAddMenuSuccess).catch(onAddMenuError);
     };
 
     const onAddMenuSuccess = (response) => {
         _logger('onAddMenuSuccess', { response });
         toastr['success']('Successfully created menu.');
+        navigate('/menus');
     };
 
     const onAddMenuError = (error) => {
@@ -144,7 +162,6 @@ const NewMenuForm = () => {
         _logger('onGetTimeZonesError', { error });
         toastr['error']('Failed to get timezones.');
     };
-
 
     const mapTimeZones = (timeZones) => {
         return (
@@ -371,5 +388,6 @@ const NewMenuForm = () => {
         </Row>
     );
 };
+
 
 export default NewMenuForm;

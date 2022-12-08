@@ -1,15 +1,16 @@
 import axios from 'axios';
-import * as helper from './serviceHelpers';
 import debug from 'sabio-debug';
+import * as helper from './serviceHelpers';
 
 const _logger = debug.extend('menusService');
 
 const endpoint = `${helper.API_HOST_PREFIX}/api/menus`;
 
-const getMenus = ( pageIndex, pageSize) => {
+const getMenus = (id) => {
+    _logger('getMenus running', id)
     const config = {
         method: 'GET',
-        url: `${endpoint}/paginate?pageIndex=${pageIndex}&pageSize=${pageSize}`,
+        url: `${endpoint}/organizations/${id}`,
         crossdomain: true,
         headers: { 'Content-Type': 'application/json' },
     };
@@ -38,6 +39,8 @@ const getTimeZones = () => {
 };
 
 const getMenusV2 = (organizationId, pageIndex, pageSize) => {
+    _logger('getMenusV2 running');
+
     const config = {
         method: 'GET',
         url: `${endpoint}/paginateV2/${organizationId}/?pageIndex=${pageIndex}&pageSize=${pageSize}`,
